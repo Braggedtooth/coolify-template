@@ -1,0 +1,47 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "NODE_ENV=production node .output/server/index.mjs",
+    "typecheck": "nuxt typecheck",
+    "lint:fix": "eslint . --fix",
+    "lint": "oxlint --deny-warnings -D correctness -D suspicious -D perf && eslint --max-warnings 0 .",
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.4.2",
+    "@nuxt/icon": "^1.4.5",
+    "@nuxt/ui": "^2.18.4",
+    "@nuxt/ui-pro": "^1.4.1",
+    "@nuxtjs/color-mode": "^3.4.2",
+    "@nuxtjs/mdc": "^0.8.3",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@prisma/nuxt": "^0.0.35",
+    "nuxt": "^3.12.2",
+    "nuxt-lodash": "^2.5.3",
+    "superjson": "^2.2.1",
+    "vue": "^3.4.29",
+    "vue-router": "^4.3.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.11.5",
+    "@nuxtjs/i18n": "^8.3.1",
+    "@prisma/client": "^5.18.0",
+    "@sidebase/nuxt-auth": "^0.7.2",
+    "@types/node": "^20.11.30",
+    "eslint": "^8.57.0",
+    "oxlint": "^0.2.15",
+    "prisma": "^5.15.1",
+    "typescript": "^5.4.3",
+    "vue-tsc": "^2.0.7"
+  },
+  "peerDependencies": {
+    "next-auth": "4.21.1"
+  }
+}
