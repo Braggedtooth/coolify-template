@@ -1,7 +1,11 @@
 <script setup lang="ts">
 const searchQuery = ref('')
 const templates = ref()
-const isOpen = ref(false)
+const showModal = ref(false)
+
+function toggleModal() {
+  showModal.value = !showModal.value
+}
 const { status, data, refresh } = await useAsyncData('searchTemplates', async () => {
   const data = await $fetch('/api/templates/search', {
     query: {
@@ -9,17 +13,24 @@ const { status, data, refresh } = await useAsyncData('searchTemplates', async ()
     },
   })
   return data
+}, {
+
 })
 
 templates.value = data.value || []
-
+const toast = useToast()
 watch(searchQuery, async () => {
-  await $fetch('/api/templates/search', {
-    query: {
-      search: searchQuery.value
-    },
-  })
-  refresh()
+  try {
+    await $fetch('/api/templates/search', {
+      query: {
+        search: searchQuery.value
+      },
+    })
+    refresh()
+  }
+  catch (e: any) {
+    toast.add({ id: 'search-error', title: 'Something went wrong', description: e.data.statusMessage, icon: 'i-octicon-x', timeout: 2000 })
+  }
 })
 
 const isLoading = status.value === 'pending'
@@ -58,54 +69,24 @@ watch(() => route.query.search, (newSearch) => {
     searchQuery.value = searchValue
   }
 }, { immediate: true })
-const statuFilter = ref([
-  {
-    label: 'All',
-    value: 'all'
-  },
-  {
-    label: 'Suggested',
-    value: 'suggested'
-  },
-  {
-    label: 'Active',
-    value: 'active'
-  },
-  {
-    label: 'Inactive',
-    value: 'inactive'
-  }
-])
-const LikeSort = ref([
-
-  {
-    label: 'Most Upvoted',
-    value: 'most-upvoted'
-  },
-  {
-    label: 'Most Downvoted',
-    value: 'most-downvoted'
-  }
-])
 </script>
 
 <template>
-  <UContainer>
+  <div>
     <div class="flex justify-between items-center mb-4 gap-4">
       <UInput
         v-model="searchQuery" :loading="isLoading" icon="i-heroicons-magnifying-glass"
         placeholder="Search templates..." class=" w-full" @update:model-value="updateSearch"
       />
-      <UButton icon="i-heroicons-plus-solid" variant="soft" size="sm" color="primary" @click="isOpen = true">
+      <UButton icon="i-heroicons-plus-solid" variant="soft" size="sm" color="primary" @click="toggleModal">
         New
       </UButton>
     </div>
-    <div>
-      <div class="flex justify-between  mb-4 gap-4">
+
+    <!-- <div class="flex justify-between  mb-4 gap-4">
         <USelect v-model="statuFilter" :options="statuFilter" label="Status" />
         <USelect v-model="LikeSort" :options="LikeSort" label="Sort" />
-      </div>
-    </div>
+      </div> -->
 
     <div v-if="isLoading" class="flex justify-center items-center h-64">
       <UIcon name="i-heroicons-magnifying-glass" class="animate-spin" />
@@ -122,7 +103,7 @@ const LikeSort = ref([
               <UBadge color="primary" class="capitalize text-xs font-bold">
                 {{ template.status }}
               </UBadge>
-              <CardMenu template-id="template.id" />
+              <CardMenu template-id="template.id" :requested-by-id="template.requestedById" :status="template.status" />
             </div>
           </div>
         </template>
@@ -153,19 +134,11 @@ const LikeSort = ref([
         </template>
       </UCard>
     </div>
-    <UModal v-model="isOpen">
-      <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-        <template #header>
-          <p class="text-lg font-semibold">
-            New Suggestion
-          </p>
-        </template>
 
-        <CreateTemplate />
-      </UCard>
-    </UModal>
+    <CreateTemplate v-model:show-modal="showModal" />
+
     <p v-if="data?.length === 0 && !isLoading && searchQuery" class="text-center text-gray-500 mt-8">
       No templates found matching your search.
     </p>
-  </UContainer>
+  </div>
 </template>

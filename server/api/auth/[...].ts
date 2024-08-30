@@ -21,6 +21,7 @@ export default NuxtAuthHandler({
     session: async ({ session, user }) => {
       if (session.user) {
         session.user.id = user.id
+        session.user.role = user.role
       }
       return session
     }

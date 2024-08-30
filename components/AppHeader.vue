@@ -4,9 +4,11 @@ const {
   signIn,
   signOut,
   getSession,
+
 } = useAuth()
 const session = await getSession()
 const toast = useToast()
+
 async function handleSignin() {
   await signIn('github').then(async () => {
     toast.add({
@@ -39,20 +41,22 @@ async function handleSignin() {
     </div>
     <div class="ml-4 flex items-center md:ml-6">
       <UButton
-        v-if="status === 'unauthenticated'"
+        v-if="status !== 'authenticated'"
+        :loading="status === 'loading'"
         label="Sign in"
         color="white"
-        trailing-icon="i-heroicons-arrow-right-20-solid"
+        icon="i-uil-github"
+        trailing-icon="i-solar-login-3-bold-duotone"
         @click="handleSignin"
       />
 
-      <div v-else>
+      <div v-if="status === 'authenticated'">
         <div class="flex items-center gap-2">
           <UButton
             label="Sign out"
             avatar
             color="white"
-            trailing-icon="i-heroicons-arrow-right-20-solid"
+            trailing-icon="i-solar-logout-3-bold-duotone"
             @click="signOut"
           >
             <template #leading>

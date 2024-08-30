@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Like, Template } from '@prisma/client'
+import type { Like, Service } from '@prisma/client'
 
-type TemplateWithScore = Template & {
+type TemplateWithScore = Service & {
   likes: Like[]
 }
 const props = defineProps<{
@@ -30,7 +30,7 @@ async function upvote() {
     })
   }
   catch (e: any) {
-    toast.add({ id: 'upvote', title: 'Something went wrong', description: e.message, icon: 'i-octicon-star', timeout: 2000 })
+    toast.add({ id: 'upvote', title: 'Something went wrong', description: e.data.statusMessage, icon: 'i-octicon-star', timeout: 2000 })
   }
 }
 
@@ -54,8 +54,7 @@ async function downvote() {
     })
   }
   catch (e: any) {
-    console.error(e)
-    toast.add({ id: 'downvote', title: 'Something went wrong', description: e.message, icon: 'i-octicon-dash', timeout: 2000 })
+    toast.add({ id: 'downvote', title: 'Something went wrong', description: e.data.statusMessage, icon: 'i-octicon-dash', timeout: 2000 })
   }
 }
 </script>

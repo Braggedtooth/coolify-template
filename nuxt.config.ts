@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   prisma: {
     installStudio: true,
     autoSetupPrisma: true,
+    generateClient: true,
 
   },
 

@@ -22,25 +22,25 @@ async function downVote(event: H3Event, userId: string) {
 
   const { id } = schema.parse(query)
 
-  const template = await event.context.prisma.template.findUnique({
+  const service = await event.context.prisma.service.findUnique({
     where: {
       id
     }
   })
 
-  if (!template) {
+  if (!service) {
     return sendError(event, createError({ statusCode: 404, statusMessage: 'Not Found' }))
   }
 
-  const like = await event.context.prisma.like.findUnique({ where: { templateId_userId: { templateId: template.id, userId } } })
-  if (template.requestedById === userId && like?.score === 0) {
-    return sendError(event, createError({ statusCode: 401, statusMessage: 'You cannot downvote your own suggestion' }))
+  const like = await event.context.prisma.like.findUnique({ where: { serviceId_userId: { serviceId: service.id, userId } } })
+  if (service.requestedById === userId && like?.score === 0) {
+    return sendError(event, createError({ statusCode: 403, statusMessage: 'You cannot downvote your own suggestion' }))
   }
   if (!like) {
     return await event.context.prisma.like.create({
       data: {
         userId,
-        templateId: template.id,
+        serviceId: service.id,
         score: -1
       },
     })
@@ -59,20 +59,18 @@ async function downVote(event: H3Event, userId: string) {
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const { id } = schema.parse(query)
-  const template = await event.context.prisma.template.findUnique({
+  const service = await event.context.prisma.service.findUnique({
     where: {
       id
     }
   })
-  if (!template) {
+  if (!service) {
     return sendError(event, createError({ statusCode: 404, statusMessage: 'Not Found' }))
   }
-  if (template.status === 'active') {
-    return sendError(event, createError({ statusCode: 400, statusMessage: 'Cannot Vote on Active Template' }))
+  if (service.status === 'ADDED' || service.status === 'DECLINED') {
+    return sendError(event, createError({ statusCode: 400, message: 'Voting disabled for this suggestion, it had either been added or declined' }))
   }
-  if (template.status === 'inactive') {
-    return sendError(event, createError({ statusCode: 400, statusMessage: 'Cannot Vote on Inactive Template' }))
-  }
+
   const session = await getServerSession(event)
   if (!session?.user) {
     return sendError(event, createError({ statusCode: 401, statusMessage: 'Unauthorized' }))
@@ -86,20 +84,5 @@ export default defineEventHandler(async (event) => {
   //     return sendError(event, createError({ statusCode: 401, statusMessage: 'Unauthorized' }))
   //   }
 
-  switch (template.status) {
-    case 'suggested':
-      await downVote(event, session.user.id)
-      break
-    case 'issue':
-      await downVote(event, session.user.id)
-      break
-    case 'pull request':
-      await downVote(event, session.user.id)
-      break
-    case 'added':
-      await downVote(event, session.user.id)
-      break
-    default:
-      break
-  }
+  await downVote(event, session.user.id)
 })

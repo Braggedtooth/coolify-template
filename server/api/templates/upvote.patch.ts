@@ -11,13 +11,13 @@ async function upVote(event: H3Event, userId: string) {
 
   const { id } = schema.parse(query)
 
-  const like = await event.context.prisma.like.findUnique({ where: { templateId_userId: { templateId: id, userId } } })
+  const like = await event.context.prisma.like.findUnique({ where: { serviceId_userId: { serviceId: id, userId } } })
 
   if (!like) {
     return await event.context.prisma.like.create({
       data: {
         userId,
-        templateId: id,
+        serviceId: id,
         score: 1
       },
     })
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const { id } = schema.parse(query)
 
-  const template = await event.context.prisma.template.findUnique({
+  const template = await event.context.prisma.service.findUnique({
     where: {
       id
     }
@@ -45,34 +45,13 @@ export default defineEventHandler(async (event) => {
   if (!template) {
     return sendError(event, createError({ statusCode: 404, statusMessage: 'Not Found' }))
   }
-  if (template.status === 'active') {
-    return sendError(event, createError({ statusCode: 400, statusMessage: 'Cannot Vote on Active Template' }))
-  }
-  if (template.status === 'inactive') {
-    return sendError(event, createError({ statusCode: 400, statusMessage: 'Cannot Vote on Inactive Template' }))
+  if (template.status === 'ADDED' || template.status === 'DECLINED') {
+    return sendError(event, createError({ statusCode: 400, message: 'Voting disabled for this suggestion, it had either been added or declined' }))
   }
   const session = await getServerSession(event)
   if (!session?.user) {
     return sendError(event, createError({ statusCode: 401, statusMessage: 'Unauthorized' }))
   }
 
-  // if (template.requestedById === user.id) {_
-  //   return sendError(event, createError({ statusCode: 400, statusMessage: 'Cannot Vote on Your Own Template' }))
-  // }
-  switch (template.status) {
-    case 'suggested':
-      await upVote(event, session.user.id)
-      break
-    case 'issue':
-      await upVote(event, session.user.id)
-      break
-    case 'pull request':
-      await upVote(event, session.user.id)
-      break
-    case 'added':
-      await upVote(event, session.user.id)
-      break
-    default:
-      break
-  }
+  await upVote(event, session.user.id)
 })

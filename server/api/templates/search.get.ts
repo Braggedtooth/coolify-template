@@ -19,17 +19,17 @@ export async function validateQuery(event: H3Event) {
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  console.info(query)
   const { search, precise } = schema.parse(query)
-
-  const hits = await event.context.prisma.template.findMany({
+  const hits = await event.context.prisma.service.findMany({
     where: {
       name: precise
         ? {
-            equals: search
+            equals: search,
+            mode: 'insensitive'
           }
-        : { contains: search }
+        : { contains: search, mode: 'insensitive' }
     },
+
     include: {
       likes: true
     }

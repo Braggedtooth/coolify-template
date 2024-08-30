@@ -6,11 +6,6 @@ export async function sendZodErrorResponse(event: H3Event, errorData: any) {
   return sendError(event, createError({ statusCode: 422, statusMessage: 'Invalid Data Provided', data: parsedErrors }))
 }
 
-// export default async function sendDefaultErrorResponse(event: H3Event, errorType: string, statusCode: number, error: any) {
-//   const parsedErrors = getMappedError(errorType, error)
-//   return sendError(event, createError({ statusCode, statusMessage: 'Invalid Data Provided', data: parsedErrors }))
-// }
-
 export function getMappedZodErrors(zodError: any) {
   const errors = new Map<string, { message: string }>()
   JSON.parse(zodError).forEach((zodError: any) => {
