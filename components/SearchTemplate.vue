@@ -44,18 +44,6 @@ function calculateScore(likes: any[]) {
   const downvotes = likes.filter(like => like.score === -1)
   return upvotes.length - downvotes.length
 }
-function _getStatusColor(status: string) {
-  switch (status.toLowerCase()) {
-    case 'active':
-      return 'green'
-    case 'suggested':
-      return 'yellow'
-    case 'inactive':
-      return 'red'
-    default:
-      return 'gray'
-  }
-}
 
 const session = useAuth()
 const user = computed(() => session.data.value?.user)
@@ -114,12 +102,14 @@ function toggleModal() {
         <template #footer>
           <div class="flex justify-between items-center">
             <UButton
+              v-if="template.appUrl"
               :to="template.appUrl" color="gray" variant="link" size="sm" target="_blank"
               rel="noopener noreferrer" icon="i-heroicons-globe-alt"
             >
               Website
             </UButton>
             <UButton
+              v-if="template.discussionUrl"
               target="_blank" rel="noopener noreferrer" :to="template.discussionUrl" variant="link" color="gray"
               size="sm" icon="i-heroicons-chat-bubble-left-ellipsis"
             >

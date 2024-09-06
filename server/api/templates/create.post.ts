@@ -11,7 +11,7 @@ const schema = z.object({
   }, { message: 'service has already been suggested' }),
   description: z.string(),
   appUrl: z.string().url(),
-  discussionUrl: z.string().url(),
+  discussionUrl: z.string().url().optional(),
 })
 export default defineEventHandler(async (event) => {
   const result = await readValidatedBody(event, body => schema.parseAsync(body))
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
         name: result.name,
         description: result.description,
         appUrl: result.appUrl,
-        discussionUrl: result.discussionUrl,
+        discussionUrl: result.discussionUrl ?? '',
         requestedById: session.user.id,
       }
     })

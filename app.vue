@@ -10,10 +10,12 @@ useHead({
     lang: 'en'
   }
 })
+const config = useRuntimeConfig()
 
 useSeoMeta({
-  ogImage: 'https://landing-template.nuxt.dev/social-card.png',
-  twitterImage: 'https://landing-template.nuxt.dev/social-card.png',
+  title: 'Coolify Templates',
+  ogImage: `${config.authOrigin}/og-image.jpeg`,
+  twitterImage: `${config.authOrigin}/og-image.jpeg`,
   twitterCard: 'summary_large_image'
 })
 </script>

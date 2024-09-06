@@ -28,7 +28,7 @@ const schema = z.object({
   }, { message: 'Template has already been suggested' }),
   description: z.string(),
   appUrl: z.string().url(),
-  discussionUrl: z.string().url(),
+  discussionUrl: z.string().url().optional(),
 })
 type Schema = InferType<typeof schema>
 
@@ -84,17 +84,34 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     })
   }
 }
+const showInfo = ref(false)
+function toggleInfo() {
+  showInfo.value = !showInfo.value
+}
 </script>
 
 <template>
   <UModal v-model="internalShowModal">
     <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
       <template #header>
-        <p class="text-lg font-semibold">
-          New Suggestion
-        </p>
-      </template>
+        <div class="flex justify-between items-center">
+          <p class="text-lg font-semibold">
+            New Suggestion
+          </p>
 
+          <UButton icon="i-uil-info-circle" size="sm" @click="toggleInfo" />
+        </div>
+      </template>
+      <UAlert
+        v-if="showInfo"
+        type="warning"
+        color="primary"
+        icon="i-uil-github"
+        class="mb-4"
+        :actions="[{ variant: 'solid', color: 'gray', label: 'View', icon: 'i-uil-github', to: 'https://github.com/coollabsio/coolify/discussions/categories/new-service-integrations', rel: 'noopener noreferrer', target: '_blank' }]"
+        title="Make sure to create a discussion on GitHub for your suggestion."
+        description="This will be the main source of truth for Coolify devs to review your suggestion."
+      />
       <UForm ref="form" :schema="schema" :state="state" class="flex flex-col gap-4" :validate-on="['change', 'submit', 'input']" @submit="onSubmit">
         <UFormGroup label="Application Name" name="name">
           <UInput v-model="state.name" />
