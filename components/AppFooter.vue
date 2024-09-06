@@ -15,7 +15,7 @@ const config = useRuntimeConfig()
       </div>
       <div class="mt-8 md:mt-0 md:order-1">
         <p class="text-center text-base text-gray-400">
-          &copy; 2024 Coolify Template Tracker. All rights reserved.
+          &copy; 2024 Coolify Template. All rights reserved.
         </p>
       </div>
     </div>
