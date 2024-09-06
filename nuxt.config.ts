@@ -2,47 +2,33 @@
 export default defineNuxtConfig({
   modules: [
     '@sidebase/nuxt-auth',
-    '@nuxtjs/i18n',
     '@nuxt/ui',
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     '@nuxtjs/color-mode',
-    '@prisma/nuxt',
     'nuxt-lodash',
-    '@nuxtjs/mdc'
   ],
 
-  prisma: {
-    installStudio: true,
-    autoSetupPrisma: true,
-    generateClient: true,
+  // vite: {
+  //   resolve: {
+  //     alias: {
+  //       '.prisma/client/index-browser': './node_modules/.prisma/client/index-browser.js',
+  //     },
+  //   },
+  // },
 
-  },
-
-  i18n: {
-    strategy: 'prefix_except_default',
-    lazy: true,
-    langDir: 'locales',
-    defaultLocale: 'en',
-    locales: [
-      {
-        name: 'English',
-        code: 'en',
-        file: 'en.json'
-      }
-    ],
-    experimental: {
-      localeDetector: './localeDetector.ts'
-    }
-  },
   typescript: {
     shim: false
   },
-
+  auth: {
+    globalAppMiddleware: true
+  },
   runtimeConfig: {
     authSecret: process.env.AUTH_SECRET,
+    authOrigin: process.env.AUTH_ORIGIN,
     githubClientId: process.env.GITHUB_CLIENT_ID,
     githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+    repoUrl: process.env.REPO_URL,
 
   },
 

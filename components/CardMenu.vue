@@ -27,6 +27,19 @@ const items: (DropdownItem | null)[][] = [
         timeout: 2000,
       })
     }
+  }, {
+    label: 'Notify me',
+    icon: 'i-heroicons-bell-20-solid',
+    click: () => {
+      toast.add({
+        id: 'notify-me',
+        title: 'Not Implemented',
+        description: 'This feature is not implemented yet.',
+        icon: 'i-octicon-x',
+        color: 'red',
+        timeout: 2000,
+      })
+    }
   }],
   [isAdminOrRequestedBy.value
     ? {

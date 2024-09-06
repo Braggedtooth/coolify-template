@@ -31,13 +31,13 @@ async function handleSignin() {
 <template>
   <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-4 px-6 flex items-center justify-between sticky top-0 left-0 right-0 z-50">
     <div class="flex items-center">
-      <div class="flex-shrink-0">
+      <a href="/" class="flex-shrink-0">
         Coolify  <UBadge
           label="Templates"
           variant="subtle"
           class="mb-0.5"
         />
-      </div>
+      </a>
     </div>
     <div class="ml-4 flex items-center md:ml-6">
       <UButton

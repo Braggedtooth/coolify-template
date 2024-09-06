@@ -3,9 +3,6 @@ const searchQuery = ref('')
 const templates = ref()
 const showModal = ref(false)
 
-function toggleModal() {
-  showModal.value = !showModal.value
-}
 const { status, data, refresh } = await useAsyncData('searchTemplates', async () => {
   const data = await $fetch('/api/templates/search', {
     query: {
@@ -69,6 +66,14 @@ watch(() => route.query.search, (newSearch) => {
     searchQuery.value = searchValue
   }
 }, { immediate: true })
+
+function toggleModal() {
+  if (!session.data.value?.user) {
+    toast.add({ id: 'login-required', title: 'Login required', description: 'You need to be logged in to create a new template.', icon: 'i-octicon-x', color: 'red', timeout: 2000 })
+    return
+  }
+  showModal.value = !showModal.value
+}
 </script>
 
 <template>
@@ -78,15 +83,10 @@ watch(() => route.query.search, (newSearch) => {
         v-model="searchQuery" :loading="isLoading" icon="i-heroicons-magnifying-glass"
         placeholder="Search templates..." class=" w-full" @update:model-value="updateSearch"
       />
-      <UButton icon="i-heroicons-plus-solid" variant="soft" size="sm" color="primary" @click="toggleModal">
+      <UButton icon="i-heroicons-plus-solid" variant="solid" size="sm" color="primary" @click="toggleModal">
         New
       </UButton>
     </div>
-
-    <!-- <div class="flex justify-between  mb-4 gap-4">
-        <USelect v-model="statuFilter" :options="statuFilter" label="Status" />
-        <USelect v-model="LikeSort" :options="LikeSort" label="Sort" />
-      </div> -->
 
     <div v-if="isLoading" class="flex justify-center items-center h-64">
       <UIcon name="i-heroicons-magnifying-glass" class="animate-spin" />

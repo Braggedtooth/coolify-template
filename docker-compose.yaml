@@ -1,0 +1,38 @@
+version : "3.9"
+services:
+  nuxt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - AUTH_ORIGIN=${AUTH_ORIGIN:-http://nuxt:3000}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - REPO_URL=${REPO_URL}
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://nuxt:3000/api/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+

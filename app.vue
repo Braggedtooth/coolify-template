@@ -19,11 +19,14 @@ useSeoMeta({
 </script>
 
 <template>
-  <AppHeader />
-  <main class="flex flex-col p-4 sm:p-6 lg:p-8 xl:p-10 ">
-    <NuxtPage />
-    <main />
+  <div class="min-h-screen bg-gray-100 flex flex-col">
+    <AppHeader />
+    <main class="flex flex-col p-4 sm:p-6 lg:p-8 xl:p-10 flex-1">
+      <NuxtPage />
+      <main />
 
-    <UNotifications />
-  </main>
+      <UNotifications />
+    </main>
+    <AppFooter />
+  </div>
 </template>
