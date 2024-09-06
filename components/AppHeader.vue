@@ -39,7 +39,8 @@ async function handleSignin() {
         />
       </a>
     </div>
-    <div class="ml-4 flex items-center md:ml-6">
+    <div class="ml-4 flex items-center md:ml-6 gap-4">
+      <ColorModeButton />
       <UButton
         v-if="status !== 'authenticated'"
         :loading="status === 'loading'"

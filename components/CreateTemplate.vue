@@ -32,7 +32,6 @@ const schema = z.object({
 })
 type Schema = InferType<typeof schema>
 
-console.info(internalShowModal.value)
 const state = reactive({
   name: undefined,
   description: undefined,
@@ -61,8 +60,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   catch (err: any) {
     if (err instanceof ZodError) {
-      console.info(err)
-      console.info('zodeError')
       form.value.setErrors(err.errors.map((err: any) => ({
         // Map validation errors to { path: string, message: string }
         message: err.statusMessage,
