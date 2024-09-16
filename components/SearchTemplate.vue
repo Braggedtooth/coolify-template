@@ -69,6 +69,7 @@ function toggleModal() {
     <div class="flex justify-between items-center mb-4 gap-4">
       <UInput
         v-model="searchQuery" :loading="isLoading" icon="i-heroicons-magnifying-glass"
+        size="lg"
         placeholder="Search templates..." class=" w-full" @update:model-value="updateSearch"
       />
       <UButton icon="i-heroicons-plus-solid" variant="solid" size="sm" color="primary" @click="toggleModal">
@@ -80,22 +81,22 @@ function toggleModal() {
       <UIcon name="i-heroicons-magnifying-glass" class="animate-spin" />
     </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
       <UCard v-for="template in data" :key="template.id" class="h-full">
         <template #header>
           <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold">
+            <h3 class=" font-semibold">
               {{ template.name }}
             </h3>
             <div class="flex items-center gap-2">
-              <UBadge color="primary" class="capitalize text-xs font-bold">
+              <UBadge class="capitalize text-xs font-bold">
                 {{ template.status }}
               </UBadge>
               <CardMenu template-id="template.id" :requested-by-id="template.requestedById" :status="template.status" />
             </div>
           </div>
         </template>
-        <p class="text-sm text-gray-600 mb-4 truncate">
+        <p class="text-sm text-neutral-300 mb-4">
           {{ template.description }}
         </p>
 
